@@ -28,7 +28,9 @@ export function Graph({ queryResults, error, isLoading, mutate }: GraphProps) {
 		{
 			selector: "node",
 			style: {
-				"background-color": "#00A0D1",
+				"background-color": "#fff",
+				"background-image": "url(/assets/logo.svg)",
+				"background-fit": "contain",
 				label: "data(id)",
 			},
 		},
