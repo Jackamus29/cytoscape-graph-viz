@@ -1,3 +1,7 @@
+declare module 'cytoscape-cola';
+declare module 'cytoscape-dagre';
+declare module 'cytoscape-euler';
+
 declare interface JLDBaseQuery {
 	from: string | string[];
 	where?: WhereKey;

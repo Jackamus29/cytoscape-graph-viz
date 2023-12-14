@@ -28,15 +28,18 @@ function App() {
 		},
 	};
 
-	const { data, isLoading, error, mutate } = useSWR(url.href, (url) =>
-		fetch(url, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${apiKey}`,
-			},
-			body: JSON.stringify(queryLuciasCreds),
-		}).then((res) => res.json())
+	const { data, isLoading, error, mutate } = useSWR(
+		url.href,
+		(url) =>
+			fetch(url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${apiKey}`,
+				},
+				body: JSON.stringify(queryLuciasCreds),
+			}).then((res) => res.json()),
+		{ fallbackData: [] }
 	);
 
 	return (
