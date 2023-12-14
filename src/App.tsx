@@ -1,35 +1,98 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import CytoscapeComponent from "react-cytoscapejs";
+import useSWR from "swr";
 
 function App() {
-  const [count, setCount] = useState(0)
+	const ledgerId = import.meta.env.VITE_LEDGER_ID;
+	const baseUrl = import.meta.env.VITE_NEXUS_URL;
+	const apiKey = import.meta.env.VITE_API_KEY;
+	const url = new URL(baseUrl + "/query");
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+	const queryLuciasCreds = {
+		from: ledgerId,
+		"@context": {
+			acd: "https://academic-credential-dataset.net/ns/",
+			clr: "https://purl.imsglobal.org/spec/vc/ob/vocab.html#",
+			vc: "https://www.w3.org/2018/credentials/v1",
+		},
+		where: {
+			"@id": "?credentials",
+			"@type": "acd:Credential",
+			"clr:credentialSubject": {
+				"acd:recipient": {
+					"@id": "acd:learners/lucialong3",
+				},
+			},
+		},
+		select: {
+			"?credentials": ["*"],
+		},
+	};
+
+	const { data, isLoading, error, mutate } = useSWR(url.href, (url) =>
+		fetch(url, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${apiKey}`,
+			},
+			body: JSON.stringify(queryLuciasCreds),
+		}).then((res) => res.json())
+	);
+
+	const elements = [
+		{
+			data: { id: "a" },
+		},
+		{
+			data: { id: "b" },
+		},
+		{
+			data: { id: "c" },
+		},
+		{
+			data: { id: "d" },
+		},
+		{
+			data: { id: "ab", source: "a", target: "b" },
+		},
+		{
+			data: { id: "cd", source: "c", target: "d" },
+		},
+	];
+
+	const stylesheet = [
+		{
+			selector: "node",
+			style: {
+				"background-color": "#666",
+				label: "data(id)",
+			},
+		},
+		{
+			selector: "edge",
+			style: {
+				width: 3,
+				"line-color": "#ccc",
+				"target-arrow-color": "#ccc",
+				"target-arrow-shape": "triangle",
+				"curve-style": "bezier",
+			},
+		},
+	];
+
+	return (
+		<div style={{ width: "100vw", height: "100vh" }}>
+			<CytoscapeComponent
+				elements={elements}
+				style={{ width: "100%", height: "100%" }}
+				stylesheet={stylesheet}
+				layout={{
+					name: "grid",
+					rows: 1,
+				}}
+			/>
+		</div>
+	);
 }
 
-export default App
+export default App;
