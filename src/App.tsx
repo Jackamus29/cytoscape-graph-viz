@@ -1,5 +1,5 @@
-import CytoscapeComponent from "react-cytoscapejs";
 import useSWR from "swr";
+import { Graph } from "./components/Graph";
 
 function App() {
 	const ledgerId = import.meta.env.VITE_LEDGER_ID;
@@ -39,59 +39,13 @@ function App() {
 		}).then((res) => res.json())
 	);
 
-	const elements = [
-		{
-			data: { id: "a" },
-		},
-		{
-			data: { id: "b" },
-		},
-		{
-			data: { id: "c" },
-		},
-		{
-			data: { id: "d" },
-		},
-		{
-			data: { id: "ab", source: "a", target: "b" },
-		},
-		{
-			data: { id: "cd", source: "c", target: "d" },
-		},
-	];
-
-	const stylesheet = [
-		{
-			selector: "node",
-			style: {
-				"background-color": "#666",
-				label: "data(id)",
-			},
-		},
-		{
-			selector: "edge",
-			style: {
-				width: 3,
-				"line-color": "#ccc",
-				"target-arrow-color": "#ccc",
-				"target-arrow-shape": "triangle",
-				"curve-style": "bezier",
-			},
-		},
-	];
-
 	return (
-		<div style={{ width: "100vw", height: "100vh" }}>
-			<CytoscapeComponent
-				elements={elements}
-				style={{ width: "100%", height: "100%" }}
-				stylesheet={stylesheet}
-				layout={{
-					name: "grid",
-					rows: 1,
-				}}
-			/>
-		</div>
+		<Graph
+			queryResults={data}
+			isLoading={isLoading}
+			error={error}
+			mutate={mutate}
+		/>
 	);
 }
 
